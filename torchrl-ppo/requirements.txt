@@ -1,0 +1,3 @@
+torchrl
+gym[mujoco]
+matplotlib
