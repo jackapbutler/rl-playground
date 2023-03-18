@@ -68,6 +68,10 @@ instance/
 # Scrapy stuff:
 .scrapy
 
+# plots
+figures/
+map.csv
+
 # Sphinx documentation
 docs/_build/
 
