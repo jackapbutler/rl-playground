@@ -11,16 +11,15 @@ def save_video(images: List, out_directory, fps=1):
     imageio.mimsave(out_directory, [np.array(img) for img in images], fps=fps)
 
 
-env = EnvRescue(10, 2, 4, random.randint(0, 10000))
+env = EnvRescue(13, 2, 4, random.randint(0, 10000))
 
 max_MC_iter = 1000
 verbose = False
 images = []
 
 for MC_iter in range(max_MC_iter):
-    if MC_iter % 1000 == 0:
+    if MC_iter % 10 == 0:
         og = env.get_global_obs()
-        print(og.shape)
         images.append((og * 255).astype(np.uint8))
 
     action1 = [
