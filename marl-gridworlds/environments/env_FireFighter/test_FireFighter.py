@@ -1,5 +1,7 @@
-from env_FireFighter import EnvFireFighter
 import random
+
+from env_FireFighter import EnvFireFighter
+
 
 def generate_tgt_list(agt_num):
     tgt_list = []

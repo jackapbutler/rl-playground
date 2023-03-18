@@ -1,8 +1,10 @@
-import numpy as np
 import random
-import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
+
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.gridspec import GridSpec
+
 
 class EnvMoveBox(object):
     def __init__(self):
@@ -68,52 +70,72 @@ class EnvMoveBox(object):
 
     def step(self, action_list):
         if self.is_1_catch_box == False:
-            if action_list[0] == 0: # up
-                if self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] != 1:  # if can move
+            if action_list[0] == 0:  # up
+                if (
+                    self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] != 1
+                ):  # if can move
                     self.agt1_pos[0] = self.agt1_pos[0] - 1
                     self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] = 0
                     self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
-            if action_list[0] == 1:   # down
-                if self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] != 1:  # if can move
+            if action_list[0] == 1:  # down
+                if (
+                    self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] != 1
+                ):  # if can move
                     self.agt1_pos[0] = self.agt1_pos[0] + 1
                     self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] = 0
                     self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
-            if action_list[0] == 2:   # left
-                if self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] != 1:  # if can move
+            if action_list[0] == 2:  # left
+                if (
+                    self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] != 1
+                ):  # if can move
                     self.agt1_pos[1] = self.agt1_pos[1] - 1
                     self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] = 0
                     self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
             if action_list[0] == 3:  # right
-                if self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] != 1:  # if can move
+                if (
+                    self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] != 1
+                ):  # if can move
                     self.agt1_pos[1] = self.agt1_pos[1] + 1
                     self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] = 0
                     self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
 
         if self.is_2_catch_box == False:
-            if action_list[1] == 0: # up
-                if self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] != 1:  # if can move
+            if action_list[1] == 0:  # up
+                if (
+                    self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] != 1
+                ):  # if can move
                     self.agt2_pos[0] = self.agt2_pos[0] - 1
                     self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] = 0
                     self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
-            if action_list[1] == 1:   # down
-                if self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] != 1:  # if can move
+            if action_list[1] == 1:  # down
+                if (
+                    self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] != 1
+                ):  # if can move
                     self.agt2_pos[0] = self.agt2_pos[0] + 1
                     self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] = 0
                     self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
-            if action_list[1] == 2:   # left
-                if self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] != 1:  # if can move
+            if action_list[1] == 2:  # left
+                if (
+                    self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] != 1
+                ):  # if can move
                     self.agt2_pos[1] = self.agt2_pos[1] - 1
                     self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] = 0
                     self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
             if action_list[1] == 3:  # right
-                if self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] != 1:  # if can move
+                if (
+                    self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] != 1
+                ):  # if can move
                     self.agt2_pos[1] = self.agt2_pos[1] + 1
                     self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] = 0
                     self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
 
         if self.is_1_catch_box and self.is_2_catch_box:
-            if action_list[0] == 0 and action_list[1] == 0: # up
-                if self.occupancy[self.box_pos[0] - 1,self.box_pos[1]] == 0 and self.occupancy[self.box_pos[0] - 1,self.box_pos[1] - 1] == 0 and self.occupancy[self.box_pos[0] - 1,self.box_pos[1] + 1] == 0:
+            if action_list[0] == 0 and action_list[1] == 0:  # up
+                if (
+                    self.occupancy[self.box_pos[0] - 1, self.box_pos[1]] == 0
+                    and self.occupancy[self.box_pos[0] - 1, self.box_pos[1] - 1] == 0
+                    and self.occupancy[self.box_pos[0] - 1, self.box_pos[1] + 1] == 0
+                ):
                     self.box_pos[0] = self.box_pos[0] - 1
                     self.agt1_pos[0] = self.agt1_pos[0] - 1
                     self.agt2_pos[0] = self.agt2_pos[0] - 1
@@ -124,7 +146,11 @@ class EnvMoveBox(object):
                     self.occupancy[self.agt1_pos[0], self.agt1_pos[1]] = 1
                     self.occupancy[self.agt2_pos[0], self.agt2_pos[1]] = 1
             if action_list[0] == 1 and action_list[1] == 1:  # down
-                if self.occupancy[self.box_pos[0] + 1,self.box_pos[1]] == 0 and self.occupancy[self.box_pos[0] + 1,self.box_pos[1] - 1] == 0 and self.occupancy[self.box_pos[0] + 1,self.box_pos[1] + 1] == 0:
+                if (
+                    self.occupancy[self.box_pos[0] + 1, self.box_pos[1]] == 0
+                    and self.occupancy[self.box_pos[0] + 1, self.box_pos[1] - 1] == 0
+                    and self.occupancy[self.box_pos[0] + 1, self.box_pos[1] + 1] == 0
+                ):
                     self.box_pos[0] = self.box_pos[0] + 1
                     self.agt1_pos[0] = self.agt1_pos[0] + 1
                     self.agt2_pos[0] = self.agt2_pos[0] + 1
@@ -149,10 +175,16 @@ class EnvMoveBox(object):
                     self.occupancy[self.box_pos[0], self.box_pos[1] + 1] = 1
                     self.occupancy[self.box_pos[0], self.box_pos[1] - 2] = 0
 
-        if self.agt1_pos[0] == self.box_pos[0] and abs(self.agt1_pos[1] - self.box_pos[1]) == 1:
+        if (
+            self.agt1_pos[0] == self.box_pos[0]
+            and abs(self.agt1_pos[1] - self.box_pos[1]) == 1
+        ):
             self.is_1_catch_box = True
 
-        if self.agt2_pos[0] == self.box_pos[0] and abs(self.agt2_pos[1] - self.box_pos[1]) == 1:
+        if (
+            self.agt2_pos[0] == self.box_pos[0]
+            and abs(self.agt2_pos[1] - self.box_pos[1]) == 1
+        ):
             self.is_2_catch_box = True
 
         done = False
@@ -192,7 +224,12 @@ class EnvMoveBox(object):
         obs = np.zeros((3, 3, 3))
         for i in range(3):
             for j in range(3):
-                if self.raw_occupancy[self.agt1_pos[0] - 1 + i][self.agt1_pos[1] - 1 + j] == 0:
+                if (
+                    self.raw_occupancy[self.agt1_pos[0] - 1 + i][
+                        self.agt1_pos[1] - 1 + j
+                    ]
+                    == 0
+                ):
                     obs[i, j, 0] = 1.0
                     obs[i, j, 1] = 1.0
                     obs[i, j, 2] = 1.0
@@ -217,7 +254,12 @@ class EnvMoveBox(object):
         obs = np.zeros((3, 3, 3))
         for i in range(3):
             for j in range(3):
-                if self.raw_occupancy[self.agt2_pos[0] - 1 + i][self.agt2_pos[1] - 1 + j] == 0:
+                if (
+                    self.raw_occupancy[self.agt2_pos[0] - 1 + i][
+                        self.agt2_pos[1] - 1 + j
+                    ]
+                    == 0
+                ):
                     obs[i, j, 0] = 1.0
                     obs[i, j, 1] = 1.0
                     obs[i, j, 2] = 1.0
@@ -277,10 +319,29 @@ class EnvMoveBox(object):
         for i in range(15):
             for j in range(15):
                 if self.raw_occupancy[i, j] == 1:
-                    cv2.rectangle(obs, (j*20, i*20), (j*20+20, i*20+20), (0, 0, 0), -1)
-        cv2.rectangle(obs, (self.agt1_pos[1] * 20, self.agt1_pos[0] * 20), (self.agt1_pos[1] * 20 + 20, self.agt1_pos[0] * 20 + 20), (0, 0, 255), -1)
-        cv2.rectangle(obs, (self.agt2_pos[1] * 20, self.agt2_pos[0] * 20), (self.agt2_pos[1] * 20 + 20, self.agt2_pos[0] * 20 + 20), (255, 0, 0), -1)
-        cv2.rectangle(obs, (self.box_pos[1] * 20, self.box_pos[0] * 20),
-                      (self.box_pos[1] * 20 + 20, self.box_pos[0] * 20 + 20), (0, 255, 0), -1)
-        cv2.imshow('image', obs)
+                    cv2.rectangle(
+                        obs, (j * 20, i * 20), (j * 20 + 20, i * 20 + 20), (0, 0, 0), -1
+                    )
+        cv2.rectangle(
+            obs,
+            (self.agt1_pos[1] * 20, self.agt1_pos[0] * 20),
+            (self.agt1_pos[1] * 20 + 20, self.agt1_pos[0] * 20 + 20),
+            (0, 0, 255),
+            -1,
+        )
+        cv2.rectangle(
+            obs,
+            (self.agt2_pos[1] * 20, self.agt2_pos[0] * 20),
+            (self.agt2_pos[1] * 20 + 20, self.agt2_pos[0] * 20 + 20),
+            (255, 0, 0),
+            -1,
+        )
+        cv2.rectangle(
+            obs,
+            (self.box_pos[1] * 20, self.box_pos[0] * 20),
+            (self.box_pos[1] * 20 + 20, self.box_pos[0] * 20 + 20),
+            (0, 255, 0),
+            -1,
+        )
+        cv2.imshow("image", obs)
         cv2.waitKey(100)

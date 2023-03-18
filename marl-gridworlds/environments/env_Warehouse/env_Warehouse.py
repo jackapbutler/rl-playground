@@ -1,20 +1,24 @@
-import numpy as np
 import random
-import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
+
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.gridspec import GridSpec
+
 
 class Box(object):
     def __init__(self, pos, size, id):
         self.id = id
         self.pos = pos
-        self.size = size    # 0, large, 1, small
+        self.size = size  # 0, large, 1, small
+
 
 class Agent(object):
     def __init__(self, pos, id):
         self.id = id
         self.pos = pos
         self.catch_box = -1
+
 
 class EnvWarehouse(object):
     def __init__(self, agt_num):
@@ -46,14 +50,14 @@ class EnvWarehouse(object):
 
         self.agt_list = []
         for i in range(self.agt_num):
-            temp_agt = Agent([4+i, 1], i)
+            temp_agt = Agent([4 + i, 1], i)
             self.occupancy[temp_agt.pos[0], temp_agt.pos[1]] = 1
             self.agt_list.append(temp_agt)
-        
+
         self.spawn_pos1 = [11, 3]
         self.spawn_pos2 = [11, 8]
         self.spawn_pos3 = [11, 13]
-        
+
         self.box_list = []
         temp_box = Box(self.spawn_pos1, random.randint(0, 1), 0)
         self.box_list.append(temp_box)
@@ -64,7 +68,7 @@ class EnvWarehouse(object):
         temp_box = Box(self.spawn_pos3, random.randint(0, 1), 2)
         self.box_list.append(temp_box)
         self.occupancy[self.box_list[2].pos[0], self.box_list[2].pos[1]] = 1
-        
+
     def reset(self, agt_num):
         self.occupancy = self.raw_occupancy.copy()
 
@@ -97,130 +101,351 @@ class EnvWarehouse(object):
 
     def step(self, action_list):
         for i in range(self.agt_num):
-            if self.agt_list[i].catch_box == -1:    # agent is not carrying any box
-                if action_list[i] == 0:     # up
-                    if self.occupancy[self.agt_list[i].pos[0] - 1][self.agt_list[i].pos[1]] != 1:  # if can move
+            if self.agt_list[i].catch_box == -1:  # agent is not carrying any box
+                if action_list[i] == 0:  # up
+                    if (
+                        self.occupancy[self.agt_list[i].pos[0] - 1][
+                            self.agt_list[i].pos[1]
+                        ]
+                        != 1
+                    ):  # if can move
                         self.agt_list[i].pos[0] = self.agt_list[i].pos[0] - 1
-                        self.occupancy[self.agt_list[i].pos[0] + 1][self.agt_list[i].pos[1]] = 0
-                        self.occupancy[self.agt_list[i].pos[0]][self.agt_list[i].pos[1]] = 1
-                if action_list[i] == 1:   # down
-                    if self.occupancy[self.agt_list[i].pos[0] + 1][self.agt_list[i].pos[1]] != 1:  # if can move
+                        self.occupancy[self.agt_list[i].pos[0] + 1][
+                            self.agt_list[i].pos[1]
+                        ] = 0
+                        self.occupancy[self.agt_list[i].pos[0]][
+                            self.agt_list[i].pos[1]
+                        ] = 1
+                if action_list[i] == 1:  # down
+                    if (
+                        self.occupancy[self.agt_list[i].pos[0] + 1][
+                            self.agt_list[i].pos[1]
+                        ]
+                        != 1
+                    ):  # if can move
                         self.agt_list[i].pos[0] = self.agt_list[i].pos[0] + 1
-                        self.occupancy[self.agt_list[i].pos[0] - 1][self.agt_list[i].pos[1]] = 0
-                        self.occupancy[self.agt_list[i].pos[0]][self.agt_list[i].pos[1]] = 1
-                if action_list[i] == 2:   # left
-                    if self.occupancy[self.agt_list[i].pos[0]][self.agt_list[i].pos[1] - 1] != 1:  # if can move
+                        self.occupancy[self.agt_list[i].pos[0] - 1][
+                            self.agt_list[i].pos[1]
+                        ] = 0
+                        self.occupancy[self.agt_list[i].pos[0]][
+                            self.agt_list[i].pos[1]
+                        ] = 1
+                if action_list[i] == 2:  # left
+                    if (
+                        self.occupancy[self.agt_list[i].pos[0]][
+                            self.agt_list[i].pos[1] - 1
+                        ]
+                        != 1
+                    ):  # if can move
                         self.agt_list[i].pos[1] = self.agt_list[i].pos[1] - 1
-                        self.occupancy[self.agt_list[i].pos[0]][self.agt_list[i].pos[1] + 1] = 0
-                        self.occupancy[self.agt_list[i].pos[0]][self.agt_list[i].pos[1]] = 1
+                        self.occupancy[self.agt_list[i].pos[0]][
+                            self.agt_list[i].pos[1] + 1
+                        ] = 0
+                        self.occupancy[self.agt_list[i].pos[0]][
+                            self.agt_list[i].pos[1]
+                        ] = 1
                 if action_list[i] == 3:  # right
-                    if self.occupancy[self.agt_list[i].pos[0]][self.agt_list[i].pos[1] + 1] != 1:  # if can move
+                    if (
+                        self.occupancy[self.agt_list[i].pos[0]][
+                            self.agt_list[i].pos[1] + 1
+                        ]
+                        != 1
+                    ):  # if can move
                         self.agt_list[i].pos[1] = self.agt_list[i].pos[1] + 1
-                        self.occupancy[self.agt_list[i].pos[0]][self.agt_list[i].pos[1] - 1] = 0
-                        self.occupancy[self.agt_list[i].pos[0]][self.agt_list[i].pos[1]] = 1
+                        self.occupancy[self.agt_list[i].pos[0]][
+                            self.agt_list[i].pos[1] - 1
+                        ] = 0
+                        self.occupancy[self.agt_list[i].pos[0]][
+                            self.agt_list[i].pos[1]
+                        ] = 1
 
         # joint move
-        for i in range(len(self.box_list)):     # for each box
-            agt_index_list = self.get_caught_agt_index_list(self.box_list[i].id)  # get all agents carrying it
+        for i in range(len(self.box_list)):  # for each box
+            agt_index_list = self.get_caught_agt_index_list(
+                self.box_list[i].id
+            )  # get all agents carrying it
 
-            if len(agt_index_list) == 1:    # only one agent is catching it
+            if len(agt_index_list) == 1:  # only one agent is catching it
                 if self.box_list[i].size == 1:
                     common_action = action_list[agt_index_list[0]]
                     if common_action == 0:  # up
-                        if self.occupancy[self.box_list[i].pos[0] - 1, self.box_list[i].pos[1]] == 0 and self.occupancy[self.agt_list[agt_index_list[0]].pos[0] - 1, self.agt_list[agt_index_list[0]].pos[1]] == 0:
+                        if (
+                            self.occupancy[
+                                self.box_list[i].pos[0] - 1, self.box_list[i].pos[1]
+                            ]
+                            == 0
+                            and self.occupancy[
+                                self.agt_list[agt_index_list[0]].pos[0] - 1,
+                                self.agt_list[agt_index_list[0]].pos[1],
+                            ]
+                            == 0
+                        ):
                             self.box_list[i].pos[0] = self.box_list[i].pos[0] - 1
-                            self.occupancy[self.box_list[i].pos[0] + 1, self.box_list[i].pos[1]] = 0
-                            self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1]] = 1
-                            self.agt_list[agt_index_list[0]].pos[0] = self.agt_list[agt_index_list[0]].pos[0] - 1
-                            self.occupancy[self.agt_list[agt_index_list[0]].pos[0] + 1, self.agt_list[agt_index_list[0]].pos[1]] = 0
-                            self.occupancy[self.agt_list[agt_index_list[0]].pos[0], self.agt_list[agt_index_list[0]].pos[1]] = 1
+                            self.occupancy[
+                                self.box_list[i].pos[0] + 1, self.box_list[i].pos[1]
+                            ] = 0
+                            self.occupancy[
+                                self.box_list[i].pos[0], self.box_list[i].pos[1]
+                            ] = 1
+                            self.agt_list[agt_index_list[0]].pos[0] = (
+                                self.agt_list[agt_index_list[0]].pos[0] - 1
+                            )
+                            self.occupancy[
+                                self.agt_list[agt_index_list[0]].pos[0] + 1,
+                                self.agt_list[agt_index_list[0]].pos[1],
+                            ] = 0
+                            self.occupancy[
+                                self.agt_list[agt_index_list[0]].pos[0],
+                                self.agt_list[agt_index_list[0]].pos[1],
+                            ] = 1
                     if common_action == 1:  # down
-                        if self.occupancy[self.box_list[i].pos[0] + 1, self.box_list[i].pos[1]] == 0 and self.occupancy[self.agt_list[agt_index_list[0]].pos[0] + 1, self.agt_list[agt_index_list[0]].pos[1]] == 0:
+                        if (
+                            self.occupancy[
+                                self.box_list[i].pos[0] + 1, self.box_list[i].pos[1]
+                            ]
+                            == 0
+                            and self.occupancy[
+                                self.agt_list[agt_index_list[0]].pos[0] + 1,
+                                self.agt_list[agt_index_list[0]].pos[1],
+                            ]
+                            == 0
+                        ):
                             self.box_list[i].pos[0] = self.box_list[i].pos[0] + 1
-                            self.occupancy[self.box_list[i].pos[0] - 1, self.box_list[i].pos[1]] = 0
-                            self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1]] = 1
-                            self.agt_list[agt_index_list[0]].pos[0] = self.agt_list[agt_index_list[0]].pos[0] + 1
-                            self.occupancy[self.agt_list[agt_index_list[0]].pos[0] - 1, self.agt_list[agt_index_list[0]].pos[1]] = 0
-                            self.occupancy[self.agt_list[agt_index_list[0]].pos[0], self.agt_list[agt_index_list[0]].pos[1]] = 1
+                            self.occupancy[
+                                self.box_list[i].pos[0] - 1, self.box_list[i].pos[1]
+                            ] = 0
+                            self.occupancy[
+                                self.box_list[i].pos[0], self.box_list[i].pos[1]
+                            ] = 1
+                            self.agt_list[agt_index_list[0]].pos[0] = (
+                                self.agt_list[agt_index_list[0]].pos[0] + 1
+                            )
+                            self.occupancy[
+                                self.agt_list[agt_index_list[0]].pos[0] - 1,
+                                self.agt_list[agt_index_list[0]].pos[1],
+                            ] = 0
+                            self.occupancy[
+                                self.agt_list[agt_index_list[0]].pos[0],
+                                self.agt_list[agt_index_list[0]].pos[1],
+                            ] = 1
                     if common_action == 2:  # left
-                        if self.agt_list[agt_index_list[0]].pos[1] > self.box_list[i].pos[1]: # agent is at right side of box
-                            if self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1] - 1] == 0:
+                        if (
+                            self.agt_list[agt_index_list[0]].pos[1]
+                            > self.box_list[i].pos[1]
+                        ):  # agent is at right side of box
+                            if (
+                                self.occupancy[
+                                    self.box_list[i].pos[0], self.box_list[i].pos[1] - 1
+                                ]
+                                == 0
+                            ):
                                 # print('box', i, 'joint move left')
                                 self.box_list[i].pos[1] = self.box_list[i].pos[1] - 1
-                                self.agt_list[agt_index_list[0]].pos[1] = self.agt_list[agt_index_list[0]].pos[1] - 1
-                                self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1]] = 1
-                                self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1] + 2] = 0
-                        if self.agt_list[agt_index_list[0]].pos[1] < self.box_list[i].pos[1]: # agent is at left side of box
-                            if self.occupancy[self.agt_list[agt_index_list[0]].pos[0], self.agt_list[agt_index_list[0]].pos[1] - 1] == 0:
+                                self.agt_list[agt_index_list[0]].pos[1] = (
+                                    self.agt_list[agt_index_list[0]].pos[1] - 1
+                                )
+                                self.occupancy[
+                                    self.box_list[i].pos[0], self.box_list[i].pos[1]
+                                ] = 1
+                                self.occupancy[
+                                    self.box_list[i].pos[0], self.box_list[i].pos[1] + 2
+                                ] = 0
+                        if (
+                            self.agt_list[agt_index_list[0]].pos[1]
+                            < self.box_list[i].pos[1]
+                        ):  # agent is at left side of box
+                            if (
+                                self.occupancy[
+                                    self.agt_list[agt_index_list[0]].pos[0],
+                                    self.agt_list[agt_index_list[0]].pos[1] - 1,
+                                ]
+                                == 0
+                            ):
                                 # print('box', i, 'joint move left')
                                 self.box_list[i].pos[1] = self.box_list[i].pos[1] - 1
-                                self.agt_list[agt_index_list[0]].pos[1] = self.agt_list[agt_index_list[0]].pos[1] - 1
-                                self.occupancy[self.agt_list[agt_index_list[0]].pos[0], self.agt_list[agt_index_list[0]].pos[1]] = 1
-                                self.occupancy[self.agt_list[agt_index_list[0]].pos[0], self.agt_list[agt_index_list[0]].pos[1] + 2] = 0
+                                self.agt_list[agt_index_list[0]].pos[1] = (
+                                    self.agt_list[agt_index_list[0]].pos[1] - 1
+                                )
+                                self.occupancy[
+                                    self.agt_list[agt_index_list[0]].pos[0],
+                                    self.agt_list[agt_index_list[0]].pos[1],
+                                ] = 1
+                                self.occupancy[
+                                    self.agt_list[agt_index_list[0]].pos[0],
+                                    self.agt_list[agt_index_list[0]].pos[1] + 2,
+                                ] = 0
                     if common_action == 3:  # right
-                        if self.agt_list[agt_index_list[0]].pos[1] > self.box_list[i].pos[1]: # agent is at right side of box
-                            if self.occupancy[self.agt_list[agt_index_list[0]].pos[0], self.agt_list[agt_index_list[0]].pos[1] + 1] == 0:
+                        if (
+                            self.agt_list[agt_index_list[0]].pos[1]
+                            > self.box_list[i].pos[1]
+                        ):  # agent is at right side of box
+                            if (
+                                self.occupancy[
+                                    self.agt_list[agt_index_list[0]].pos[0],
+                                    self.agt_list[agt_index_list[0]].pos[1] + 1,
+                                ]
+                                == 0
+                            ):
                                 # print('box', i, 'joint move right')
                                 self.box_list[i].pos[1] = self.box_list[i].pos[1] + 1
-                                self.agt_list[agt_index_list[0]].pos[1] = self.agt_list[agt_index_list[0]].pos[1] + 1
-                                self.occupancy[self.agt_list[agt_index_list[0]].pos[0], self.agt_list[agt_index_list[0]].pos[1]] = 1
-                                self.occupancy[self.agt_list[agt_index_list[0]].pos[0], self.agt_list[agt_index_list[0]].pos[1] - 2] = 0
-                        if self.agt_list[agt_index_list[0]].pos[1] < self.box_list[i].pos[1]: # agent is at left side of box
-                            if self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1] + 1] == 0:
+                                self.agt_list[agt_index_list[0]].pos[1] = (
+                                    self.agt_list[agt_index_list[0]].pos[1] + 1
+                                )
+                                self.occupancy[
+                                    self.agt_list[agt_index_list[0]].pos[0],
+                                    self.agt_list[agt_index_list[0]].pos[1],
+                                ] = 1
+                                self.occupancy[
+                                    self.agt_list[agt_index_list[0]].pos[0],
+                                    self.agt_list[agt_index_list[0]].pos[1] - 2,
+                                ] = 0
+                        if (
+                            self.agt_list[agt_index_list[0]].pos[1]
+                            < self.box_list[i].pos[1]
+                        ):  # agent is at left side of box
+                            if (
+                                self.occupancy[
+                                    self.box_list[i].pos[0], self.box_list[i].pos[1] + 1
+                                ]
+                                == 0
+                            ):
                                 # print('box', i, 'joint move right')
                                 self.box_list[i].pos[1] = self.box_list[i].pos[1] + 1
-                                self.agt_list[agt_index_list[0]].pos[1] = self.agt_list[agt_index_list[0]].pos[1] + 1
-                                self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1]] = 1
-                                self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1] - 2] = 0
+                                self.agt_list[agt_index_list[0]].pos[1] = (
+                                    self.agt_list[agt_index_list[0]].pos[1] + 1
+                                )
+                                self.occupancy[
+                                    self.box_list[i].pos[0], self.box_list[i].pos[1]
+                                ] = 1
+                                self.occupancy[
+                                    self.box_list[i].pos[0], self.box_list[i].pos[1] - 2
+                                ] = 0
 
             if len(agt_index_list) == 2:
-                common_action = self.get_common_action(action_list, agt_index_list, self.box_list[i].size)
+                common_action = self.get_common_action(
+                    action_list, agt_index_list, self.box_list[i].size
+                )
                 if common_action == 0:  # up
-                    if self.occupancy[self.box_list[i].pos[0] - 1, self.box_list[i].pos[1]] == 0 and self.occupancy[self.box_list[i].pos[0] - 1, self.box_list[i].pos[1] - 1] == 0 and self.occupancy[self.box_list[i].pos[0] - 1, self.box_list[i].pos[1] + 1] == 0:
+                    if (
+                        self.occupancy[
+                            self.box_list[i].pos[0] - 1, self.box_list[i].pos[1]
+                        ]
+                        == 0
+                        and self.occupancy[
+                            self.box_list[i].pos[0] - 1, self.box_list[i].pos[1] - 1
+                        ]
+                        == 0
+                        and self.occupancy[
+                            self.box_list[i].pos[0] - 1, self.box_list[i].pos[1] + 1
+                        ]
+                        == 0
+                    ):
                         # print('box', i, 'joint move up')
                         self.box_list[i].pos[0] = self.box_list[i].pos[0] - 1
-                        self.occupancy[self.box_list[i].pos[0] + 1, self.box_list[i].pos[1]] = 0
-                        self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1]] = 1
+                        self.occupancy[
+                            self.box_list[i].pos[0] + 1, self.box_list[i].pos[1]
+                        ] = 0
+                        self.occupancy[
+                            self.box_list[i].pos[0], self.box_list[i].pos[1]
+                        ] = 1
                         for k in range(len(agt_index_list)):
-                            self.agt_list[agt_index_list[k]].pos[0] = self.agt_list[agt_index_list[k]].pos[0] - 1
-                            self.occupancy[self.agt_list[agt_index_list[k]].pos[0] + 1, self.agt_list[agt_index_list[k]].pos[1]] = 0
-                            self.occupancy[self.agt_list[agt_index_list[k]].pos[0], self.agt_list[agt_index_list[k]].pos[1]] = 1
+                            self.agt_list[agt_index_list[k]].pos[0] = (
+                                self.agt_list[agt_index_list[k]].pos[0] - 1
+                            )
+                            self.occupancy[
+                                self.agt_list[agt_index_list[k]].pos[0] + 1,
+                                self.agt_list[agt_index_list[k]].pos[1],
+                            ] = 0
+                            self.occupancy[
+                                self.agt_list[agt_index_list[k]].pos[0],
+                                self.agt_list[agt_index_list[k]].pos[1],
+                            ] = 1
 
                 if common_action == 1:  # down
-                    if self.occupancy[self.box_list[i].pos[0] + 1, self.box_list[i].pos[1]] == 0 and self.occupancy[self.box_list[i].pos[0] + 1, self.box_list[i].pos[1] - 1] == 0 and self.occupancy[self.box_list[i].pos[0] + 1, self.box_list[i].pos[1] + 1] == 0:
+                    if (
+                        self.occupancy[
+                            self.box_list[i].pos[0] + 1, self.box_list[i].pos[1]
+                        ]
+                        == 0
+                        and self.occupancy[
+                            self.box_list[i].pos[0] + 1, self.box_list[i].pos[1] - 1
+                        ]
+                        == 0
+                        and self.occupancy[
+                            self.box_list[i].pos[0] + 1, self.box_list[i].pos[1] + 1
+                        ]
+                        == 0
+                    ):
                         # print('box', i, 'joint move down')
                         self.box_list[i].pos[0] = self.box_list[i].pos[0] + 1
-                        self.occupancy[self.box_list[i].pos[0] - 1, self.box_list[i].pos[1]] = 0
-                        self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1]] = 1
+                        self.occupancy[
+                            self.box_list[i].pos[0] - 1, self.box_list[i].pos[1]
+                        ] = 0
+                        self.occupancy[
+                            self.box_list[i].pos[0], self.box_list[i].pos[1]
+                        ] = 1
                         for k in range(len(agt_index_list)):
-                            self.agt_list[agt_index_list[k]].pos[0] = self.agt_list[agt_index_list[k]].pos[0] + 1
-                            self.occupancy[self.agt_list[agt_index_list[k]].pos[0] - 1, self.agt_list[agt_index_list[k]].pos[1]] = 0
-                            self.occupancy[self.agt_list[agt_index_list[k]].pos[0], self.agt_list[agt_index_list[k]].pos[1]] = 1
+                            self.agt_list[agt_index_list[k]].pos[0] = (
+                                self.agt_list[agt_index_list[k]].pos[0] + 1
+                            )
+                            self.occupancy[
+                                self.agt_list[agt_index_list[k]].pos[0] - 1,
+                                self.agt_list[agt_index_list[k]].pos[1],
+                            ] = 0
+                            self.occupancy[
+                                self.agt_list[agt_index_list[k]].pos[0],
+                                self.agt_list[agt_index_list[k]].pos[1],
+                            ] = 1
 
                 if common_action == 2:  # left
-                    if self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1] - 2] == 0:
+                    if (
+                        self.occupancy[
+                            self.box_list[i].pos[0], self.box_list[i].pos[1] - 2
+                        ]
+                        == 0
+                    ):
                         # print('box', i, 'joint move left')
                         self.box_list[i].pos[1] = self.box_list[i].pos[1] - 1
-                        self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1] - 1] = 1
-                        self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1] + 2] = 0
+                        self.occupancy[
+                            self.box_list[i].pos[0], self.box_list[i].pos[1] - 1
+                        ] = 1
+                        self.occupancy[
+                            self.box_list[i].pos[0], self.box_list[i].pos[1] + 2
+                        ] = 0
                         # print('agt_list', agt_index_list)
                         for k in range(len(agt_index_list)):
-                            self.agt_list[agt_index_list[k]].pos[1] = self.agt_list[agt_index_list[k]].pos[1] - 1
+                            self.agt_list[agt_index_list[k]].pos[1] = (
+                                self.agt_list[agt_index_list[k]].pos[1] - 1
+                            )
 
                 if common_action == 3:  # right
-                    if self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1] + 2] == 0:
+                    if (
+                        self.occupancy[
+                            self.box_list[i].pos[0], self.box_list[i].pos[1] + 2
+                        ]
+                        == 0
+                    ):
                         # print('box', i, 'joint move right')
                         self.box_list[i].pos[1] = self.box_list[i].pos[1] + 1
-                        self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1] + 1] = 1
-                        self.occupancy[self.box_list[i].pos[0], self.box_list[i].pos[1] - 2] = 0
+                        self.occupancy[
+                            self.box_list[i].pos[0], self.box_list[i].pos[1] + 1
+                        ] = 1
+                        self.occupancy[
+                            self.box_list[i].pos[0], self.box_list[i].pos[1] - 2
+                        ] = 0
                         for k in range(len(agt_index_list)):
-                            self.agt_list[agt_index_list[k]].pos[1] = self.agt_list[agt_index_list[k]].pos[1] + 1
+                            self.agt_list[agt_index_list[k]].pos[1] = (
+                                self.agt_list[agt_index_list[k]].pos[1] + 1
+                            )
 
         # catch box
         for i in range(self.agt_num):
-            if self.agt_list[i].catch_box == -1:    # agent is not carrying any box
+            if self.agt_list[i].catch_box == -1:  # agent is not carrying any box
                 for k in range(len(self.box_list)):
-                    if self.agt_list[i].pos[0] == self.box_list[k].pos[0] and abs(self.agt_list[i].pos[1] - self.box_list[k].pos[1]) == 1:
+                    if (
+                        self.agt_list[i].pos[0] == self.box_list[k].pos[0]
+                        and abs(self.agt_list[i].pos[1] - self.box_list[k].pos[1]) == 1
+                    ):
                         self.agt_list[i].catch_box = self.box_list[k].id
 
         # generate new box
@@ -233,22 +458,38 @@ class EnvWarehouse(object):
         for k in range(len(self.box_list)):
             # print('k', k)
             if self.box_list[k].size == 0:  # large box
-                if self.box_list[k].pos == [1, 4] or self.box_list[k].pos == [1, 5] or self.box_list[k].pos == [1, 6]:
+                if (
+                    self.box_list[k].pos == [1, 4]
+                    or self.box_list[k].pos == [1, 5]
+                    or self.box_list[k].pos == [1, 6]
+                ):
                     reward = reward + 15
                     delete_id_list.append(self.box_list[k].id)
-                if self.box_list[k].pos == [1, 10] or self.box_list[k].pos == [1, 11] or self.box_list[k].pos == [1, 12]:
+                if (
+                    self.box_list[k].pos == [1, 10]
+                    or self.box_list[k].pos == [1, 11]
+                    or self.box_list[k].pos == [1, 12]
+                ):
                     reward = reward - 15
                     delete_id_list.append(self.box_list[k].id)
-            else:   # small box
-                if self.box_list[k].pos == [1, 4] or self.box_list[k].pos == [1, 5] or self.box_list[k].pos == [1, 6]:
+            else:  # small box
+                if (
+                    self.box_list[k].pos == [1, 4]
+                    or self.box_list[k].pos == [1, 5]
+                    or self.box_list[k].pos == [1, 6]
+                ):
                     reward = reward - 5
                     delete_id_list.append(self.box_list[k].id)
-                if self.box_list[k].pos == [1, 10] or self.box_list[k].pos == [1, 11] or self.box_list[k].pos == [1, 12]:
+                if (
+                    self.box_list[k].pos == [1, 10]
+                    or self.box_list[k].pos == [1, 11]
+                    or self.box_list[k].pos == [1, 12]
+                ):
                     reward = reward + 5
                     delete_id_list.append(self.box_list[k].id)
         for k in range(len(delete_id_list)):
             self.delete_box(delete_id_list[k])
-            print('delete box', delete_id_list[k])
+            print("delete box", delete_id_list[k])
         return reward
 
     def is_box_in_list(self, id):
@@ -293,9 +534,13 @@ class EnvWarehouse(object):
             temp_state[0, 1] = self.agt_list[i].pos[1] / 17
             temp_state[0, 2] = -1
             temp_state[0, 3] = -1
-            if self.agt_list[i].catch_box != -1:    # is carring box
-                temp_state[0, 2] = self.box_list[self.get_box_index(self.agt_list[i].catch_box)].pos[0]
-                temp_state[0, 3] = self.box_list[self.get_box_index(self.agt_list[i].catch_box)].pos[1]
+            if self.agt_list[i].catch_box != -1:  # is carring box
+                temp_state[0, 2] = self.box_list[
+                    self.get_box_index(self.agt_list[i].catch_box)
+                ].pos[0]
+                temp_state[0, 3] = self.box_list[
+                    self.get_box_index(self.agt_list[i].catch_box)
+                ].pos[1]
             temp_state[0, 4] = 0
             temp_state[0, 5] = 0
             state_list.append(temp_state)
@@ -334,7 +579,10 @@ class EnvWarehouse(object):
 
     def delete_box(self, box_id):
         # print('delete box', box_id)
-        self.occupancy[self.box_list[self.get_box_index(box_id)].pos[0], self.box_list[self.get_box_index(box_id)].pos[1]] = 0
+        self.occupancy[
+            self.box_list[self.get_box_index(box_id)].pos[0],
+            self.box_list[self.get_box_index(box_id)].pos[1],
+        ] = 0
 
         temp_list = []
         agt_index_list = self.get_caught_agt_index_list(box_id)
@@ -348,18 +596,18 @@ class EnvWarehouse(object):
         self.box_list = temp_list
 
         # print('new box list')
-        '''for k in range(len(self.box_list)):
+        """for k in range(len(self.box_list)):
             print('box', self.box_list[k].id, 'is at', self.box_list[k].pos, ', caught by',
-                  self.get_caught_agt_index_list(self.box_list[k].id))'''
+                  self.get_caught_agt_index_list(self.box_list[k].id))"""
 
     def get_common_action(self, action_list, agt_index_list, size):
         if len(agt_index_list) == 0:
             return -1
 
         if len(agt_index_list) == 1:
-            if size == 0:   # large box
+            if size == 0:  # large box
                 common_action = -1
-            if size == 1:   # small box
+            if size == 1:  # small box
                 common_action = action_list[agt_index_list[0]]
 
         if len(agt_index_list) >= 2:
@@ -379,9 +627,11 @@ class EnvWarehouse(object):
                     obs[i, j, 2] = 0.0
 
         for i in range(self.agt_num):
-            obs[self.agt_list[i].pos[0], self.agt_list[i].pos[1], 0] = i/self.agt_num
-            obs[self.agt_list[i].pos[0], self.agt_list[i].pos[1], 1] = 1-i/self.agt_num
-            obs[self.agt_list[i].pos[0], self.agt_list[i].pos[1], 2] = i/self.agt_num
+            obs[self.agt_list[i].pos[0], self.agt_list[i].pos[1], 0] = i / self.agt_num
+            obs[self.agt_list[i].pos[0], self.agt_list[i].pos[1], 1] = (
+                1 - i / self.agt_num
+            )
+            obs[self.agt_list[i].pos[0], self.agt_list[i].pos[1], 2] = i / self.agt_num
 
         for i in range(len(self.box_list)):
             if self.box_list[i].size == 0:  # large
@@ -412,26 +662,41 @@ class EnvWarehouse(object):
         for i in range(13):
             for j in range(17):
                 if self.raw_occupancy[i, j] == 1:
-                    cv2.rectangle(obs, (j*20, i*20), (j*20+20, i*20+20), (0, 0, 0), -1)
+                    cv2.rectangle(
+                        obs, (j * 20, i * 20), (j * 20 + 20, i * 20 + 20), (0, 0, 0), -1
+                    )
 
         for i in range(self.agt_num):
-            cv2.rectangle(obs, (self.agt_list[i].pos[1] * 20, self.agt_list[i].pos[0] * 20), (self.agt_list[i].pos[1] * 20 + 20, self.agt_list[i].pos[0] * 20 + 20), (0, 255, 0), -1)
+            cv2.rectangle(
+                obs,
+                (self.agt_list[i].pos[1] * 20, self.agt_list[i].pos[0] * 20),
+                (self.agt_list[i].pos[1] * 20 + 20, self.agt_list[i].pos[0] * 20 + 20),
+                (0, 255, 0),
+                -1,
+            )
 
         for i in range(len(self.box_list)):
             if self.box_list[i].size == 0:  # large
-                cv2.rectangle(obs, (self.box_list[i].pos[1] * 20, self.box_list[i].pos[0] * 20), (self.box_list[i].pos[1] * 20 + 20, self.box_list[i].pos[0] * 20 + 20), (255, 0, 0), -1)
-            else:   # small
-                cv2.rectangle(obs, (self.box_list[i].pos[1] * 20, self.box_list[i].pos[0] * 20),
-                              (self.box_list[i].pos[1] * 20 + 20, self.box_list[i].pos[0] * 20 + 20), (0, 0, 255), -1)
-        cv2.imshow('image', obs)
+                cv2.rectangle(
+                    obs,
+                    (self.box_list[i].pos[1] * 20, self.box_list[i].pos[0] * 20),
+                    (
+                        self.box_list[i].pos[1] * 20 + 20,
+                        self.box_list[i].pos[0] * 20 + 20,
+                    ),
+                    (255, 0, 0),
+                    -1,
+                )
+            else:  # small
+                cv2.rectangle(
+                    obs,
+                    (self.box_list[i].pos[1] * 20, self.box_list[i].pos[0] * 20),
+                    (
+                        self.box_list[i].pos[1] * 20 + 20,
+                        self.box_list[i].pos[0] * 20 + 20,
+                    ),
+                    (0, 0, 255),
+                    -1,
+                )
+        cv2.imshow("image", obs)
         cv2.waitKey(50)
-
-
-
-
-
-
-
-
-    
-        

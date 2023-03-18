@@ -1,20 +1,22 @@
-import numpy as np
-from PIL import Image,ImageFont,ImageDraw
 import math
 import random
 
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+
+
 class Ball(object):
     def __init__(self, friction):
-        self.pos = [277., 244.]
+        self.pos = [277.0, 244.0]
         self.last_pos = self.pos
-        self.vel = [0., 0.]
+        self.vel = [0.0, 0.0]
         self.friction = friction
-        self.radius = 20.
+        self.radius = 20.0
 
     def reset(self):
-        self.pos = [277., 244.]
+        self.pos = [277.0, 244.0]
         self.last_pos = self.pos
-        self.vel = [0., 0.]
+        self.vel = [0.0, 0.0]
 
     def step(self, add_vel, player_list):
         self.last_pos = self.pos
@@ -37,7 +39,7 @@ class Ball(object):
         return c
 
     def vec_minus(self, vec):
-        new_vec = [0., 0.]
+        new_vec = [0.0, 0.0]
         new_vec[0] = -vec[0]
         new_vec[1] = -vec[1]
         return new_vec
@@ -51,17 +53,21 @@ class Ball(object):
         return new_theta
 
     def vec_mul_const(self, vec, con):
-        new_vec = [0., 0.]
+        new_vec = [0.0, 0.0]
         new_vec[0] = vec[0] * con
         new_vec[1] = vec[1] * con
         return new_vec
 
     def vec_angle(self, start, target):
         base = [1, 0]
-        theta_1 = math.acos((self.vec_mul(target, base)) / (self.vec_mode(target) * self.vec_mode(base)))
+        theta_1 = math.acos(
+            (self.vec_mul(target, base)) / (self.vec_mode(target) * self.vec_mode(base))
+        )
         if target[1] < 0:
             theta_1 = -theta_1
-        theta_2 = math.acos((self.vec_mul(start, base)) / (self.vec_mode(start) * self.vec_mode(base)))
+        theta_2 = math.acos(
+            (self.vec_mul(start, base)) / (self.vec_mode(start) * self.vec_mode(base))
+        )
         if start[1] < 0:
             theta_2 = -theta_2
         theta = self.rad_to_angle(theta_1 - theta_2)
@@ -79,13 +85,17 @@ class Ball(object):
         return angle
 
     def vec_mul(self, vec_1, vec_2):
-        mul = vec_1[0]*vec_2[0]+vec_1[1]*vec_2[1]
+        mul = vec_1[0] * vec_2[0] + vec_1[1] * vec_2[1]
         return mul
 
     def vec_rotate(self, vec, theta):
-        new_vec = [0., 0.]
-        new_vec[0] = vec[0]*math.cos(self.angle_to_rad(theta)) - vec[1]*math.sin(self.angle_to_rad(theta))
-        new_vec[1] = vec[0] * math.sin(self.angle_to_rad(theta)) + vec[1] * math.cos(self.angle_to_rad(theta))
+        new_vec = [0.0, 0.0]
+        new_vec[0] = vec[0] * math.cos(self.angle_to_rad(theta)) - vec[1] * math.sin(
+            self.angle_to_rad(theta)
+        )
+        new_vec[1] = vec[0] * math.sin(self.angle_to_rad(theta)) + vec[1] * math.cos(
+            self.angle_to_rad(theta)
+        )
         return new_vec
 
     def is_ball_bump_player(self, player):
@@ -94,7 +104,7 @@ class Ball(object):
         dist = self.vec_mode(temp)
         last_temp = self.vec_sub(self.last_pos, player.pos)
         last_dist = self.vec_mode(last_temp)
-        if dist < player.radius and last_dist>=player.radius:
+        if dist < player.radius and last_dist >= player.radius:
             is_bump = True
         return is_bump
 
@@ -112,17 +122,17 @@ class Ball(object):
         return new_vel
 
     def vec_mode(self, vec):
-        mode = math.sqrt(vec[0]*vec[0]+vec[1]*vec[1])
+        mode = math.sqrt(vec[0] * vec[0] + vec[1] * vec[1])
         return mode
 
     def vec_sub(self, start, target):
-        vec = [0., 0.]
+        vec = [0.0, 0.0]
         vec[0] = target[0] - start[0]
         vec[1] = target[1] - start[1]
         return vec
 
     def bound_ball_pos(self):
-        if self.pos[0] <= 0 and self.last_pos[0] > 0 :
+        if self.pos[0] <= 0 and self.last_pos[0] > 0:
             self.pos[0] = 0
             self.vel[0] = -self.vel[0]
             self.vel[0] = self.vel[0] * 0.8
@@ -139,61 +149,62 @@ class Ball(object):
             self.vel[1] = -self.vel[1]
             self.vel[1] = self.vel[1] * 0.8
 
+
 class Player(object):
-    def __init__(self, team, role):   # team = 0, 1   role = 1, 2, 3
-        self.vel = [0., 0.]
-        self.omega = 0.
-        self.radius = 25.
-        self.kick_radius = 50.
-        self.view_angle = 50.
+    def __init__(self, team, role):  # team = 0, 1   role = 1, 2, 3
+        self.vel = [0.0, 0.0]
+        self.omega = 0.0
+        self.radius = 25.0
+        self.kick_radius = 50.0
+        self.view_angle = 50.0
         self.max_speed = 30
         self.team = team
         self.role = role
         self.map_img = Image.open("map.png")
         if self.team == 0:  # red team
             if self.role == 1:
-                self.pos = [103., 241.]
+                self.pos = [103.0, 241.0]
                 self.theta = 0
             elif self.role == 2:
-                self.pos = [115., 390.]
+                self.pos = [115.0, 390.0]
                 self.theta = 0
             else:
-                self.pos = [120., 93.]
+                self.pos = [120.0, 93.0]
                 self.theta = 0
-        else:               # blue team
+        else:  # blue team
             if self.role == 1:
-                self.pos = [477., 241.]
+                self.pos = [477.0, 241.0]
                 self.theta = 180
             elif self.role == 2:
-                self.pos = [401., 411.]
+                self.pos = [401.0, 411.0]
                 self.theta = 180
             else:
-                self.pos = [402., 115.]
+                self.pos = [402.0, 115.0]
                 self.theta = 180
 
     def reset(self):
         if self.team == 0:  # red team
             if self.role == 1:
-                self.pos = [103., 241.]
+                self.pos = [103.0, 241.0]
                 self.theta = 0
             elif self.role == 2:
-                self.pos = [115., 390.]
+                self.pos = [115.0, 390.0]
                 self.theta = 0
             else:
-                self.pos = [120., 93.]
+                self.pos = [120.0, 93.0]
                 self.theta = 0
-        else:               # blue team
+        else:  # blue team
             if self.role == 1:
-                self.pos = [477., 241.]
+                self.pos = [477.0, 241.0]
                 self.theta = 180
             elif self.role == 2:
-                self.pos = [401., 411.]
+                self.pos = [401.0, 411.0]
                 self.theta = 180
             else:
-                self.pos = [402., 115.]
+                self.pos = [402.0, 115.0]
                 self.theta = 180
-        self.vel = [0., 0.]
-        self.omega = 0.
+        self.vel = [0.0, 0.0]
+        self.omega = 0.0
 
     def step(self, action_index, action_vector, action_const, player_list, ball):
         temp_pos = self.list_add(self.pos, self.vel)
@@ -202,46 +213,46 @@ class Player(object):
         self.theta = self.theta + self.omega
         self.theta = self.bound_angle(self.theta)
         self.bound_player_pos()
-        if action_index == 0:   # kick [,], const
+        if action_index == 0:  # kick [,], const
             self.vel = self.vec_mul_const(self.vel, 0.8)
             self.regulate_speed()
             ori_vec = self.vec_rotate([1, 0], -self.theta)
             kick_angle = self.vec_angle(ori_vec, action_vector)
             kick_angle = self.bound_angle(kick_angle)
             kick_angle = abs(kick_angle)
-            k = - 0.7 / 180
+            k = -0.7 / 180
             attenuation = k * kick_angle + 1
             temp_force = self.vec_mul_const(action_vector, attenuation)
             ball.vel = self.vec_add(ball.vel, temp_force)
-        if action_index == 1:   # stop ball
+        if action_index == 1:  # stop ball
             self.vel = [0, 0]
             if self.vec_distance(ball.pos, self.pos) < self.kick_radius:
                 ball.vel = [0, 0]
-        if action_index == 2:   # run [,], const
+        if action_index == 2:  # run [,], const
             temp_vel = self.vec_normalize(action_vector)
             temp_vel = self.vec_mul_const(temp_vel, action_const)
             ori_vec = self.vec_rotate([1, 0], -self.theta)
             kick_angle = self.vec_angle(ori_vec, action_vector)
             kick_angle = self.bound_angle(kick_angle)
             kick_angle = abs(kick_angle)
-            k = - 0.7 / 180
+            k = -0.7 / 180
             attenuation = k * kick_angle + 1
             temp_vel = self.vec_mul_const(temp_vel, attenuation)
             self.vel = temp_vel
             self.regulate_speed()
-        if action_index == 3:   # turn const
+        if action_index == 3:  # turn const
             temp_omega = action_const
             temp_omega = self.bound_const(temp_omega, -20, 20)
             self.omega = temp_omega
             self.vel = self.vec_mul_const(self.vel, 0.8)
-        if action_index == 4:   # run with ball [,], const
+        if action_index == 4:  # run with ball [,], const
             temp_vel = self.vec_normalize(action_vector)
             temp_vel = self.vec_mul_const(temp_vel, action_const)
             ori_vec = self.vec_rotate([1, 0], -self.theta)
             kick_angle = self.vec_angle(ori_vec, action_vector)
             kick_angle = self.bound_angle(kick_angle)
             kick_angle = abs(kick_angle)
-            k = - 0.7 / 180
+            k = -0.7 / 180
             attenuation = k * kick_angle + 1
             temp_vel = self.vec_mul_const(temp_vel, attenuation)
             self.vel = temp_vel
@@ -266,19 +277,25 @@ class Player(object):
         return rad
 
     def vec_rotate(self, vec, theta):
-        new_vec = [0., 0.]
-        new_vec[0] = vec[0]*math.cos(self.angle_to_rad(theta)) - vec[1]*math.sin(self.angle_to_rad(theta))
-        new_vec[1] = vec[0] * math.sin(self.angle_to_rad(theta)) + vec[1] * math.cos(self.angle_to_rad(theta))
+        new_vec = [0.0, 0.0]
+        new_vec[0] = vec[0] * math.cos(self.angle_to_rad(theta)) - vec[1] * math.sin(
+            self.angle_to_rad(theta)
+        )
+        new_vec[1] = vec[0] * math.sin(self.angle_to_rad(theta)) + vec[1] * math.cos(
+            self.angle_to_rad(theta)
+        )
         return new_vec
 
     def vec_sub(self, start, target):
-        vec = [0., 0.]
+        vec = [0.0, 0.0]
         vec[0] = target[0] - start[0]
         vec[1] = target[1] - start[1]
         return vec
 
     def vec_distance(self, vec_1, vec_2):
-        dist = (vec_1[0]-vec_2[0])*(vec_1[0]-vec_2[0])+(vec_1[1]-vec_2[1])*(vec_1[1]-vec_2[1])
+        dist = (vec_1[0] - vec_2[0]) * (vec_1[0] - vec_2[0]) + (vec_1[1] - vec_2[1]) * (
+            vec_1[1] - vec_2[1]
+        )
         dist = math.sqrt(dist)
         return dist
 
@@ -287,7 +304,7 @@ class Player(object):
         if new_const < lowerbound:
             new_const = lowerbound
         if new_const > upperbound:
-            new_const =  upperbound
+            new_const = upperbound
         return new_const
 
     def bound_angle(self, theta):
@@ -299,7 +316,7 @@ class Player(object):
         return new_theta
 
     def vec_mode(self, vec):
-        mode = math.sqrt(vec[0]*vec[0]+vec[1]*vec[1])
+        mode = math.sqrt(vec[0] * vec[0] + vec[1] * vec[1])
         return mode
 
     def rad_to_angle(self, rad):
@@ -309,34 +326,38 @@ class Player(object):
 
     def vec_angle(self, start, target):
         base = [1, 0]
-        theta_1 = math.acos((self.vec_mul(target, base)) / (self.vec_mode(target) * self.vec_mode(base)))
+        theta_1 = math.acos(
+            (self.vec_mul(target, base)) / (self.vec_mode(target) * self.vec_mode(base))
+        )
         if target[1] < 0:
             theta_1 = -theta_1
-        theta_2 = math.acos((self.vec_mul(start, base)) / (self.vec_mode(start) * self.vec_mode(base)))
-        if start[1]<0:
+        theta_2 = math.acos(
+            (self.vec_mul(start, base)) / (self.vec_mode(start) * self.vec_mode(base))
+        )
+        if start[1] < 0:
             theta_2 = -theta_2
         theta = self.rad_to_angle(theta_1 - theta_2)
         theta = self.bound_angle(theta)
         return theta
 
     def vec_mul(self, vec_1, vec_2):
-        mul = vec_1[0]*vec_2[0]+vec_1[1]*vec_2[1]
+        mul = vec_1[0] * vec_2[0] + vec_1[1] * vec_2[1]
         return mul
 
     def vec_add(self, start, target):
-        vec = [0., 0.]
+        vec = [0.0, 0.0]
         vec[0] = target[0] + start[0]
         vec[1] = target[1] + start[1]
         return vec
 
     def vec_normalize(self, vec):
-        new_vec = [0., 0.]
+        new_vec = [0.0, 0.0]
         new_vec[0] = vec[0] / self.vec_mode(vec)
         new_vec[1] = vec[1] / self.vec_mode(vec)
         return new_vec
 
     def vec_mul_const(self, vec, con):
-        new_vec = [0., 0.]
+        new_vec = [0.0, 0.0]
         new_vec[0] = vec[0] * con
         new_vec[1] = vec[1] * con
         return new_vec
@@ -358,7 +379,10 @@ class Player(object):
             if player_list[i].team != self.team or player_list[i].role != self.role:
                 other_player_list.append(player_list[i])
         for i in range(len(other_player_list)):
-            if self.vec_distance(temp_pos, other_player_list[i].pos) < self.radius + other_player_list[i].radius:
+            if (
+                self.vec_distance(temp_pos, other_player_list[i].pos)
+                < self.radius + other_player_list[i].radius
+            ):
                 is_bump = True
         return is_bump
 
@@ -367,6 +391,7 @@ class Player(object):
         if speed > self.max_speed:
             self.vel = self.vec_normalize(self.vel)
             self.vel = self.vec_mul_const(self.vel, self.max_speed)
+
 
 class EnvSoccer(object):
     def __init__(self):
@@ -384,37 +409,59 @@ class EnvSoccer(object):
         self.add_player(1)
 
         self.map_img = Image.open("map.png")
-        self.map_img = self.map_img.convert('RGBA')
+        self.map_img = self.map_img.convert("RGBA")
         self.soccer_img = Image.open("soccer.png")
-        self.soccer_img = self.soccer_img.convert('RGBA')
+        self.soccer_img = self.soccer_img.convert("RGBA")
         self.redbot_img = Image.open("redbot.png")
-        self.redbot_img = self.redbot_img.convert('RGBA')
+        self.redbot_img = self.redbot_img.convert("RGBA")
         self.bluebot_img = Image.open("bluebot.png")
-        self.bluebot_img = self.bluebot_img.convert('RGBA')
+        self.bluebot_img = self.bluebot_img.convert("RGBA")
 
     def get_global_obs(self):
         # load Image
         obs = self.map_img.crop((0, 0, 700, 500))
 
         r, g, b, alpha = self.soccer_img.split()
-        obs.paste(self.soccer_img, (round(self.ball.pos[0] - 25), round(self.ball.pos[1] - 25)), mask=alpha)
+        obs.paste(
+            self.soccer_img,
+            (round(self.ball.pos[0] - 25), round(self.ball.pos[1] - 25)),
+            mask=alpha,
+        )
 
         for i in range(len(self.player_list)):
             if self.player_list[i].team == 0:
                 temp_redbot_img = self.redbot_img.rotate(-self.player_list[i].theta)
                 draw = ImageDraw.Draw(temp_redbot_img)
-                ttfront = ImageFont.truetype('simhei.ttf', 30)
-                draw.text((30, 22), str(self.player_list[i].role), (255, 255, 0), font=ttfront)
+                ttfront = ImageFont.truetype("simhei.ttf", 30)
+                draw.text(
+                    (30, 22), str(self.player_list[i].role), (255, 255, 0), font=ttfront
+                )
                 r, g, b, alpha = temp_redbot_img.split()
-                obs.paste(temp_redbot_img, (round(self.player_list[i].pos[0] - 40), round(self.player_list[i].pos[1] - 40)), mask=alpha)
+                obs.paste(
+                    temp_redbot_img,
+                    (
+                        round(self.player_list[i].pos[0] - 40),
+                        round(self.player_list[i].pos[1] - 40),
+                    ),
+                    mask=alpha,
+                )
             if self.player_list[i].team == 1:
                 temp_bluebot_img = self.bluebot_img.rotate(-self.player_list[i].theta)
                 draw = ImageDraw.Draw(temp_bluebot_img)
-                ttfront = ImageFont.truetype('simhei.ttf', 30)
-                draw.text((30, 22), str(self.player_list[i].role), (255, 255, 0), font=ttfront)
+                ttfront = ImageFont.truetype("simhei.ttf", 30)
+                draw.text(
+                    (30, 22), str(self.player_list[i].role), (255, 255, 0), font=ttfront
+                )
                 r, g, b, alpha = temp_bluebot_img.split()
-                obs.paste(temp_bluebot_img, (round(self.player_list[i].pos[0] - 40), round(self.player_list[i].pos[1] - 40)), mask=alpha)
-        obs = obs.convert('RGB')
+                obs.paste(
+                    temp_bluebot_img,
+                    (
+                        round(self.player_list[i].pos[0] - 40),
+                        round(self.player_list[i].pos[1] - 40),
+                    ),
+                    mask=alpha,
+                )
+        obs = obs.convert("RGB")
         obs = np.array(obs)
         return obs
 
@@ -424,17 +471,22 @@ class EnvSoccer(object):
         else:
             obs = self.get_global_obs()
             ori_vec = self.vec_rotate([1, 0], -self.player_list[index].theta)
-            img = Image.fromarray(obs).convert('RGB')
+            img = Image.fromarray(obs).convert("RGB")
             draw = ImageDraw.Draw(img)
             x = self.player_list[index].pos[0]
             y = self.player_list[index].pos[1]
             theta = self.player_list[index].theta
-            draw.pieslice((x - 800, y - 800, x + 800, y + 800), theta + self.player_list[index].view_angle,  theta - self.player_list[index].view_angle, fill=(149, 149, 149))
+            draw.pieslice(
+                (x - 800, y - 800, x + 800, y + 800),
+                theta + self.player_list[index].view_angle,
+                theta - self.player_list[index].view_angle,
+                fill=(149, 149, 149),
+            )
             obs = np.array(img)
             return obs
 
     def step(self, action_index_list, action_vector_list, action_const_list):
-        self.ball.step([0., 0.], self.player_list)
+        self.ball.step([0.0, 0.0], self.player_list)
 
         # check ball in gate
         if self.is_ball_in_gate():
@@ -445,13 +497,18 @@ class EnvSoccer(object):
 
         # check bump to player
 
-
         # player move
         action_index_list = self.reform_action_list(action_index_list)
         action_vector_list = self.reform_action_list(action_vector_list)
         action_const_list = self.reform_action_list(action_const_list)
         for i in range(len(self.player_list)):
-            self.player_list[i].step(action_index_list[i], action_vector_list[i], action_const_list[i], self.player_list, self.ball)
+            self.player_list[i].step(
+                action_index_list[i],
+                action_vector_list[i],
+                action_const_list[i],
+                self.player_list,
+                self.ball,
+            )
 
         # player bump to ball
 
@@ -471,7 +528,12 @@ class EnvSoccer(object):
 
     def is_ball_in_gate(self):
         is_in = False
-        if self.ball.pos[0] > 550 and self.ball.pos[0] <700 and self.ball.pos[1] > 150 and self.ball.pos[1] <350:
+        if (
+            self.ball.pos[0] > 550
+            and self.ball.pos[0] < 700
+            and self.ball.pos[1] > 150
+            and self.ball.pos[1] < 350
+        ):
             is_in = True
         return is_in
 
@@ -490,11 +552,11 @@ class EnvSoccer(object):
         return blue_num
 
     def add_player(self, team):
-        if team == 0:   # add red team
+        if team == 0:  # add red team
             if self.count_red_player_num() < 3:
                 temp_player = Player(team, self.count_red_player_num() + 1)
                 self.player_list.append(temp_player)
-        else:           # add blue team
+        else:  # add blue team
             if self.count_blue_player_num() < 3:
                 temp_player = Player(team, self.count_blue_player_num() + 1)
                 self.player_list.append(temp_player)
@@ -514,13 +576,13 @@ class EnvSoccer(object):
         return new_list
 
     def vec_sub(self, start, target):
-        vec = [0., 0.]
+        vec = [0.0, 0.0]
         vec[0] = target[0] - start[0]
         vec[1] = target[1] - start[1]
         return vec
 
     def vec_add(self, start, target):
-        vec = [0., 0.]
+        vec = [0.0, 0.0]
         vec[0] = target[0] + start[0]
         vec[1] = target[1] + start[1]
         return vec
@@ -539,39 +601,43 @@ class EnvSoccer(object):
         return new_vel
 
     def vec_mode(self, vec):
-        mode = math.sqrt(vec[0]*vec[0]+vec[1]*vec[1])
+        mode = math.sqrt(vec[0] * vec[0] + vec[1] * vec[1])
         return mode
 
     def vec_minus(self, vec):
-        new_vec = [0., 0.]
+        new_vec = [0.0, 0.0]
         new_vec[0] = -vec[0]
         new_vec[1] = -vec[1]
         return new_vec
 
     def vec_mul(self, vec_1, vec_2):
-        mul = vec_1[0]*vec_2[0]+vec_1[1]*vec_2[1]
+        mul = vec_1[0] * vec_2[0] + vec_1[1] * vec_2[1]
         return mul
 
     def vec_angle(self, start, target):
         base = [1, 0]
-        theta_1 = math.acos((self.vec_mul(target, base)) / (self.vec_mode(target) * self.vec_mode(base)))
+        theta_1 = math.acos(
+            (self.vec_mul(target, base)) / (self.vec_mode(target) * self.vec_mode(base))
+        )
         if target[1] < 0:
             theta_1 = -theta_1
-        theta_2 = math.acos((self.vec_mul(start, base)) / (self.vec_mode(start) * self.vec_mode(base)))
-        if start[1]<0:
+        theta_2 = math.acos(
+            (self.vec_mul(start, base)) / (self.vec_mode(start) * self.vec_mode(base))
+        )
+        if start[1] < 0:
             theta_2 = -theta_2
         theta = self.rad_to_angle(theta_1 - theta_2)
         theta = self.bound_angle(theta)
         return theta
 
     def vec_normalize(self, vec):
-        new_vec = [0., 0.]
+        new_vec = [0.0, 0.0]
         new_vec[0] = vec[0] / self.vec_mode(vec)
         new_vec[1] = vec[1] / self.vec_mode(vec)
         return new_vec
 
     def vec_mul_const(self, vec, con):
-        new_vec = [0., 0.]
+        new_vec = [0.0, 0.0]
         new_vec[0] = vec[0] * con
         new_vec[1] = vec[1] * con
         return new_vec
@@ -587,9 +653,13 @@ class EnvSoccer(object):
         return rad
 
     def vec_rotate(self, vec, theta):
-        new_vec = [0., 0.]
-        new_vec[0] = vec[0]*math.cos(self.angle_to_rad(theta)) - vec[1]*math.sin(self.angle_to_rad(theta))
-        new_vec[1] = vec[0] * math.sin(self.angle_to_rad(theta)) + vec[1] * math.cos(self.angle_to_rad(theta))
+        new_vec = [0.0, 0.0]
+        new_vec[0] = vec[0] * math.cos(self.angle_to_rad(theta)) - vec[1] * math.sin(
+            self.angle_to_rad(theta)
+        )
+        new_vec[1] = vec[0] * math.sin(self.angle_to_rad(theta)) + vec[1] * math.cos(
+            self.angle_to_rad(theta)
+        )
         return new_vec
 
     def is_ball_bump_player(self, ball, player):
@@ -598,12 +668,14 @@ class EnvSoccer(object):
         dist = self.vec_mode(temp)
         last_temp = self.vec_sub(ball.last_pos, player.pos)
         last_dist = self.vec_mode(last_temp)
-        if dist < player.radius and last_dist>=player.radius:
+        if dist < player.radius and last_dist >= player.radius:
             is_bump = True
         return is_bump
 
     def vec_distance(self, vec_1, vec_2):
-        dist = (vec_1[0]-vec_2[0])*(vec_1[0]-vec_2[0])-(vec_1[1]-vec_2[1])*(vec_1[1]-vec_2[1])
+        dist = (vec_1[0] - vec_2[0]) * (vec_1[0] - vec_2[0]) - (vec_1[1] - vec_2[1]) * (
+            vec_1[1] - vec_2[1]
+        )
         dist = math.sqrt(dist)
         return dist
 

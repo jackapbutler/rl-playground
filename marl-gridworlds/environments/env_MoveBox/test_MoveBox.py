@@ -1,6 +1,7 @@
-from env_MoveBox import EnvMoveBox
 import random
+
 import matplotlib.pyplot as plt
+from env_MoveBox import EnvMoveBox
 
 env = EnvMoveBox()
 max_iter = 100000
@@ -15,6 +16,6 @@ for i in range(max_iter):
     action1 = random.randint(0, 3)
     action2 = random.randint(0, 3)
     reward, done = env.step([action1, action2])
-    print('reward', reward)
+    print("reward", reward)
     if reward > 0:
-        print('reset')
+        print("reset")

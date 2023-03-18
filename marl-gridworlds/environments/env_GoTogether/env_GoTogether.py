@@ -1,8 +1,10 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
 import random
+
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.gridspec import GridSpec
+
 
 class EnvGoTogether(object):
     def __init__(self, size):
@@ -40,36 +42,55 @@ class EnvGoTogether(object):
         reward = 0
         # agent1 move
         if action_list[0] == 0:  # move up
-            if self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] != 1
+            ):  # if can move
                 self.agt1_pos[0] = self.agt1_pos[0] - 1
         elif action_list[0] == 1:  # move down
-            if self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] != 1
+            ):  # if can move
                 self.agt1_pos[0] = self.agt1_pos[0] + 1
         elif action_list[0] == 2:  # move left
-            if self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] != 1
+            ):  # if can move
                 self.agt1_pos[1] = self.agt1_pos[1] - 1
         elif action_list[0] == 3:  # move right
-            if self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] != 1
+            ):  # if can move
                 self.agt1_pos[1] = self.agt1_pos[1] + 1
 
         # agent2 move
         if action_list[1] == 0:  # move up
-            if self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] != 1
+            ):  # if can move
                 self.agt2_pos[0] = self.agt2_pos[0] - 1
         elif action_list[1] == 1:  # move down
-            if self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] != 1
+            ):  # if can move
                 self.agt2_pos[0] = self.agt2_pos[0] + 1
         elif action_list[1] == 2:  # move left
-            if self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] != 1
+            ):  # if can move
                 self.agt2_pos[1] = self.agt2_pos[1] - 1
         elif action_list[1] == 3:  # move right
-            if self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] != 1
+            ):  # if can move
                 self.agt2_pos[1] = self.agt2_pos[1] + 1
 
         if self.agt1_pos == self.goal_pos and self.agt2_pos == self.goal_pos:
             reward = reward + 10
 
-        if self.sqr_dist(self.agt1_pos, self.agt2_pos)<=1 or self.sqr_dist(self.agt1_pos, self.agt2_pos)>9:
+        if (
+            self.sqr_dist(self.agt1_pos, self.agt2_pos) <= 1
+            or self.sqr_dist(self.agt1_pos, self.agt2_pos) > 9
+        ):
             reward = reward - 0.5
         done = False
         if reward > 0:
@@ -77,7 +98,9 @@ class EnvGoTogether(object):
         return reward, done
 
     def sqr_dist(self, pos1, pos2):
-        return (pos1[0]-pos2[0])*(pos1[0]-pos2[0])+(pos1[1]-pos2[1])*(pos1[1]-pos2[1])
+        return (pos1[0] - pos2[0]) * (pos1[0] - pos2[0]) + (pos1[1] - pos2[1]) * (
+            pos1[1] - pos2[1]
+        )
 
     def get_global_obs(self):
         obs = np.zeros((self.map_size, self.map_size, 3))
@@ -108,17 +131,40 @@ class EnvGoTogether(object):
     def render(self):
         obs = self.get_global_obs()
         enlarge = 30
-        new_obs = np.ones((self.map_size*enlarge, self.map_size*enlarge, 3))
+        new_obs = np.ones((self.map_size * enlarge, self.map_size * enlarge, 3))
         for i in range(self.map_size):
             for j in range(self.map_size):
-
                 if obs[i][j][0] == 0.0 and obs[i][j][1] == 0.0 and obs[i][j][2] == 0.0:
-                    cv2.rectangle(new_obs, (j * enlarge, i * enlarge), (j * enlarge + enlarge, i * enlarge + enlarge), (0, 0, 0), -1)
+                    cv2.rectangle(
+                        new_obs,
+                        (j * enlarge, i * enlarge),
+                        (j * enlarge + enlarge, i * enlarge + enlarge),
+                        (0, 0, 0),
+                        -1,
+                    )
                 if obs[i][j][0] == 1.0 and obs[i][j][1] == 0.0 and obs[i][j][2] == 0.0:
-                    cv2.rectangle(new_obs, (j * enlarge, i * enlarge), (j * enlarge + enlarge, i * enlarge + enlarge), (0, 0, 255), -1)
+                    cv2.rectangle(
+                        new_obs,
+                        (j * enlarge, i * enlarge),
+                        (j * enlarge + enlarge, i * enlarge + enlarge),
+                        (0, 0, 255),
+                        -1,
+                    )
                 if obs[i][j][0] == 0.0 and obs[i][j][1] == 1.0 and obs[i][j][2] == 0.0:
-                    cv2.rectangle(new_obs, (j * enlarge, i * enlarge), (j * enlarge + enlarge, i * enlarge + enlarge), (0, 255, 0), -1)
+                    cv2.rectangle(
+                        new_obs,
+                        (j * enlarge, i * enlarge),
+                        (j * enlarge + enlarge, i * enlarge + enlarge),
+                        (0, 255, 0),
+                        -1,
+                    )
                 if obs[i][j][0] == 0.0 and obs[i][j][1] == 0.0 and obs[i][j][2] == 1.0:
-                    cv2.rectangle(new_obs, (j * enlarge, i * enlarge), (j * enlarge + enlarge, i * enlarge + enlarge), (255, 0, 0), -1)
-        cv2.imshow('image', new_obs)
+                    cv2.rectangle(
+                        new_obs,
+                        (j * enlarge, i * enlarge),
+                        (j * enlarge + enlarge, i * enlarge + enlarge),
+                        (255, 0, 0),
+                        -1,
+                    )
+        cv2.imshow("image", new_obs)
         cv2.waitKey(100)

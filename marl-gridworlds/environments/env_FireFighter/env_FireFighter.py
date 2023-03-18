@@ -1,5 +1,7 @@
-import numpy as np
 import random
+
+import numpy as np
+
 
 class EnvFireFighter(object):
     def __init__(self, house_num):
@@ -9,7 +11,7 @@ class EnvFireFighter(object):
         for i in range(self.house_num):
             self.firelevel.append(3)
 
-    def step(self, target_list):    # 0 left, 1 right
+    def step(self, target_list):  # 0 left, 1 right
         for i in range(self.house_num):
             if self.firelevel[i] > 0:
                 if self.is_neighbour_on_fire(i):
@@ -33,7 +35,7 @@ class EnvFireFighter(object):
                         self.firelevel[i] = self.firelevel[i] - 1
                     else:
                         self.firelevel[i] = 0
-            else:   # no fire
+            else:  # no fire
                 if self.is_neighbour_on_fire(i):
                     if self.how_many_fighters(i, target_list) == 0:
                         if random.random() < 0.8:
@@ -99,7 +101,7 @@ class EnvFireFighter(object):
     def get_obs(self):
         obs = []
         for i in range(self.fighter_num):
-            temp = [0, 0]       # [left, right]
+            temp = [0, 0]  # [left, right]
             if random.random() < 1 - np.exp(-self.firelevel[i]):
                 temp[0] = 1
 

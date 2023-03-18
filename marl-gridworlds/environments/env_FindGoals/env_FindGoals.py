@@ -1,10 +1,10 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.gridspec import GridSpec
+
 
 class EnvFindGoals(object):
-
     def __init__(self):
         self.start1 = [3, 1]
         self.start2 = [6, 1]
@@ -12,16 +12,18 @@ class EnvFindGoals(object):
         self.dest2 = [1, 2]
         self.agt1_pos = [3, 1]
         self.agt2_pos = [6, 1]
-        self.occupancy = [[1, 1, 1, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 1, 1]]
+        self.occupancy = [
+            [1, 1, 1, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 1, 1],
+        ]
 
     def list_add(self, a, b):
         c = [a[i] + b[i] for i in range(min(len(a), len(b)))]
@@ -200,17 +202,17 @@ class EnvFindGoals(object):
         for i in range(4):
             for j in range(10):
                 if self.occupancy[j][i] == 1:
-                    obs[3-i, j, 0] = 0
-                    obs[3-i, j, 1] = 0
-                    obs[3-i, j, 2] = 0
+                    obs[3 - i, j, 0] = 0
+                    obs[3 - i, j, 1] = 0
+                    obs[3 - i, j, 2] = 0
                 if [j, i] == self.agt1_pos:
-                    obs[3-i, j, 0] = 1
-                    obs[3-i, j, 1] = 0
-                    obs[3-i, j, 2] = 0
+                    obs[3 - i, j, 0] = 1
+                    obs[3 - i, j, 1] = 0
+                    obs[3 - i, j, 2] = 0
                 if [j, i] == self.agt2_pos:
-                    obs[3-i, j, 0] = 0
-                    obs[3-i, j, 1] = 0
-                    obs[3-i, j, 2] = 1
+                    obs[3 - i, j, 0] = 0
+                    obs[3 - i, j, 1] = 0
+                    obs[3 - i, j, 2] = 1
         return obs
 
     def get_obs(self):
@@ -224,9 +226,11 @@ class EnvFindGoals(object):
         self.dest1 = [8, 2]
         self.dest2 = [1, 2]
         # agent1 move
-        if action_list[0] == 0:    # move up
+        if action_list[0] == 0:  # move up
             reward_1 = reward_1 - 1
-            if self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] != 1:     # if can move
+            if (
+                self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] != 1
+            ):  # if can move
                 self.agt1_pos[1] = self.agt1_pos[1] + 1
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] = 0
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
@@ -234,7 +238,9 @@ class EnvFindGoals(object):
                 reward_1 = reward_1 - 3
         elif action_list[0] == 1:  # move down
             reward_1 = reward_1 - 1
-            if self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] != 1
+            ):  # if can move
                 self.agt1_pos[1] = self.agt1_pos[1] - 1
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] = 0
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
@@ -242,7 +248,9 @@ class EnvFindGoals(object):
                 reward_1 = reward_1 - 3
         elif action_list[0] == 2:  # move left
             reward_1 = reward_1 - 1
-            if self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] != 1
+            ):  # if can move
                 self.agt1_pos[0] = self.agt1_pos[0] - 1
                 self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] = 0
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
@@ -250,7 +258,9 @@ class EnvFindGoals(object):
                 reward_1 = reward_1 - 3
         elif action_list[0] == 3:  # move right
             reward_1 = reward_1 - 1
-            if self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] != 1
+            ):  # if can move
                 self.agt1_pos[0] = self.agt1_pos[0] + 1
                 self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] = 0
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
@@ -258,9 +268,11 @@ class EnvFindGoals(object):
                 reward_1 = reward_1 - 3
 
         # agent2 move
-        if action_list[1] == 0:    # move up
+        if action_list[1] == 0:  # move up
             reward_2 = reward_2 - 1
-            if self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] != 1:     # if can move
+            if (
+                self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] != 1
+            ):  # if can move
                 self.agt2_pos[1] = self.agt2_pos[1] + 1
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] = 0
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
@@ -268,7 +280,9 @@ class EnvFindGoals(object):
                 reward_2 = reward_2 - 3
         elif action_list[1] == 1:  # move down
             reward_2 = reward_2 - 1
-            if self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] != 1
+            ):  # if can move
                 self.agt2_pos[1] = self.agt2_pos[1] - 1
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] = 0
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
@@ -276,7 +290,9 @@ class EnvFindGoals(object):
                 reward_2 = reward_2 - 3
         elif action_list[1] == 2:  # move left
             reward_2 = reward_2 - 1
-            if self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] != 1
+            ):  # if can move
                 self.agt2_pos[0] = self.agt2_pos[0] - 1
                 self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] = 0
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
@@ -284,7 +300,9 @@ class EnvFindGoals(object):
                 reward_2 = reward_2 - 3
         elif action_list[1] == 3:  # move right
             reward_2 = reward_2 - 1
-            if self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] != 1
+            ):  # if can move
                 self.agt2_pos[0] = self.agt2_pos[0] + 1
                 self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] = 0
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
@@ -304,7 +322,7 @@ class EnvFindGoals(object):
             reward_2 = reward_2 + 50
 
         done = False
-        if reward_1>0:
+        if reward_1 > 0:
             done = True
         return [reward_1, reward_2], done
 
@@ -312,16 +330,18 @@ class EnvFindGoals(object):
         self.agt1_pos = [3, 1]
         self.agt2_pos = [6, 1]
 
-        self.occupancy = [[1, 1, 1, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 0, 1],
-                          [1, 1, 1, 1]]
+        self.occupancy = [
+            [1, 1, 1, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 1, 1],
+        ]
 
     def plot_scene(self):
         fig = plt.figure(figsize=(5, 5))
@@ -346,8 +366,26 @@ class EnvFindGoals(object):
         for i in range(10):
             for j in range(4):
                 if self.occupancy[i][j] == 1:
-                    cv2.rectangle(obs, (i*20, (3-j)*20), (i*20+20, (3-j)*20+20), (0, 0, 0), -1)
-        cv2.rectangle(obs, (self.agt2_pos[0] * 20, (3-self.agt2_pos[1]) * 20), (self.agt2_pos[0] * 20 + 20, (3-self.agt2_pos[1]) * 20 + 20), (255, 0, 0), -1)
-        cv2.rectangle(obs, (self.agt1_pos[0] * 20, (3-self.agt1_pos[1]) * 20), (self.agt1_pos[0] * 20 + 20, (3-self.agt1_pos[1]) * 20 + 20), (0, 0, 255), -1)
-        cv2.imshow('image', obs)
+                    cv2.rectangle(
+                        obs,
+                        (i * 20, (3 - j) * 20),
+                        (i * 20 + 20, (3 - j) * 20 + 20),
+                        (0, 0, 0),
+                        -1,
+                    )
+        cv2.rectangle(
+            obs,
+            (self.agt2_pos[0] * 20, (3 - self.agt2_pos[1]) * 20),
+            (self.agt2_pos[0] * 20 + 20, (3 - self.agt2_pos[1]) * 20 + 20),
+            (255, 0, 0),
+            -1,
+        )
+        cv2.rectangle(
+            obs,
+            (self.agt1_pos[0] * 20, (3 - self.agt1_pos[1]) * 20),
+            (self.agt1_pos[0] * 20 + 20, (3 - self.agt1_pos[1]) * 20 + 20),
+            (0, 0, 255),
+            -1,
+        )
+        cv2.imshow("image", obs)
         cv2.waitKey(10)

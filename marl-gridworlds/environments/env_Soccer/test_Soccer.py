@@ -1,6 +1,7 @@
-from env_Soccer import EnvSoccer
-import matplotlib.pyplot as plt
 import random
+
+import matplotlib.pyplot as plt
+from env_Soccer import EnvSoccer
 
 env = EnvSoccer()
 
@@ -18,12 +19,12 @@ for MC_iter in range(max_MC_iter):
     rand_vec_list = []
     rand_const_list = []
     for i in range(6):
-        temp = [20 * (random.random()-0.5), 20 * (random.random()-0.5)]
+        temp = [20 * (random.random() - 0.5), 20 * (random.random() - 0.5)]
         rand_action_list.append(random.randint(0, 4))
         rand_vec_list.append(temp)
         rand_const_list.append(20 * random.random())
     # add random velocity
     env.step(rand_action_list, rand_vec_list, rand_const_list)
-    #plt.show()
-    plt.pause(.04)
+    # plt.show()
+    plt.pause(0.04)
     plt.draw()

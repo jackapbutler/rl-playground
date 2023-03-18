@@ -1,10 +1,12 @@
-from env_Drones import EnvDrones
 import random
+
 import matplotlib.pyplot as plt
+from env_Drones import EnvDrones
 from matplotlib.gridspec import GridSpec
 
-
-env = EnvDrones(50, 4, 10, 30, 5)   # map_size, drone_num, view_range, tree_num, human_num
+env = EnvDrones(
+    50, 4, 10, 30, 5
+)  # map_size, drone_num, view_range, tree_num, human_num
 env.rand_reset_drone_pos()
 
 max_MC_iter = 100
@@ -25,5 +27,5 @@ for MC_iter in range(max_MC_iter):
     for i in range(env.drone_num):
         drone_act_list.append(random.randint(0, 4))
     env.step(human_act_list, drone_act_list)
-    plt.pause(.5)
+    plt.pause(0.5)
     plt.draw()

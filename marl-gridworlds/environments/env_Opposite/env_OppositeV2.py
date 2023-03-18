@@ -1,8 +1,10 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
 import random
+
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.gridspec import GridSpec
+
 
 class EnvOppositeV2(object):
     def __init__(self, size):
@@ -71,22 +73,30 @@ class EnvOppositeV2(object):
         reward = 0
         # agent1 move
         if action_list[0] == 0:  # move up
-            if self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] != 1
+            ):  # if can move
                 self.agt1_pos[0] = self.agt1_pos[0] - 1
                 self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] = 0
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
         elif action_list[0] == 1:  # move down
-            if self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0] + 1][self.agt1_pos[1]] != 1
+            ):  # if can move
                 self.agt1_pos[0] = self.agt1_pos[0] + 1
                 self.occupancy[self.agt1_pos[0] - 1][self.agt1_pos[1]] = 0
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
         elif action_list[0] == 2:  # move left
-            if self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] != 1
+            ):  # if can move
                 self.agt1_pos[1] = self.agt1_pos[1] - 1
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] = 0
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
         elif action_list[0] == 3:  # move right
-            if self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] + 1] != 1
+            ):  # if can move
                 self.agt1_pos[1] = self.agt1_pos[1] + 1
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1] - 1] = 0
                 self.occupancy[self.agt1_pos[0]][self.agt1_pos[1]] = 1
@@ -95,22 +105,30 @@ class EnvOppositeV2(object):
             reward = reward + 5
 
         if action_list[1] == 0:  # move up
-            if self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] != 1
+            ):  # if can move
                 self.agt2_pos[0] = self.agt2_pos[0] - 1
                 self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] = 0
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
         elif action_list[1] == 1:  # move down
-            if self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0] + 1][self.agt2_pos[1]] != 1
+            ):  # if can move
                 self.agt2_pos[0] = self.agt2_pos[0] + 1
                 self.occupancy[self.agt2_pos[0] - 1][self.agt2_pos[1]] = 0
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
         elif action_list[1] == 2:  # move left
-            if self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] != 1
+            ):  # if can move
                 self.agt2_pos[1] = self.agt2_pos[1] - 1
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] = 0
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
         elif action_list[1] == 3:  # move right
-            if self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] + 1] != 1
+            ):  # if can move
                 self.agt2_pos[1] = self.agt2_pos[1] + 1
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1] - 1] = 0
                 self.occupancy[self.agt2_pos[0]][self.agt2_pos[1]] = 1
@@ -119,22 +137,30 @@ class EnvOppositeV2(object):
             reward = reward + 5
 
         if action_list[2] == 0:  # move up
-            if self.occupancy[self.agt3_pos[0] - 1][self.agt3_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt3_pos[0] - 1][self.agt3_pos[1]] != 1
+            ):  # if can move
                 self.agt3_pos[0] = self.agt3_pos[0] - 1
                 self.occupancy[self.agt3_pos[0] + 1][self.agt3_pos[1]] = 0
                 self.occupancy[self.agt3_pos[0]][self.agt3_pos[1]] = 1
         elif action_list[2] == 1:  # move down
-            if self.occupancy[self.agt3_pos[0] + 1][self.agt3_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt3_pos[0] + 1][self.agt3_pos[1]] != 1
+            ):  # if can move
                 self.agt3_pos[0] = self.agt3_pos[0] + 1
                 self.occupancy[self.agt3_pos[0] - 1][self.agt3_pos[1]] = 0
                 self.occupancy[self.agt3_pos[0]][self.agt3_pos[1]] = 1
         elif action_list[2] == 2:  # move left
-            if self.occupancy[self.agt3_pos[0]][self.agt3_pos[1] - 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt3_pos[0]][self.agt3_pos[1] - 1] != 1
+            ):  # if can move
                 self.agt3_pos[1] = self.agt3_pos[1] - 1
                 self.occupancy[self.agt3_pos[0]][self.agt3_pos[1] + 1] = 0
                 self.occupancy[self.agt3_pos[0]][self.agt3_pos[1]] = 1
         elif action_list[2] == 3:  # move right
-            if self.occupancy[self.agt3_pos[0]][self.agt3_pos[1] + 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt3_pos[0]][self.agt3_pos[1] + 1] != 1
+            ):  # if can move
                 self.agt3_pos[1] = self.agt3_pos[1] + 1
                 self.occupancy[self.agt3_pos[0]][self.agt3_pos[1] - 1] = 0
                 self.occupancy[self.agt3_pos[0]][self.agt3_pos[1]] = 1
@@ -143,22 +169,30 @@ class EnvOppositeV2(object):
             reward = reward + 5
 
         if action_list[3] == 0:  # move up
-            if self.occupancy[self.agt4_pos[0] - 1][self.agt4_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt4_pos[0] - 1][self.agt4_pos[1]] != 1
+            ):  # if can move
                 self.agt4_pos[0] = self.agt4_pos[0] - 1
                 self.occupancy[self.agt4_pos[0] + 1][self.agt4_pos[1]] = 0
                 self.occupancy[self.agt4_pos[0]][self.agt4_pos[1]] = 1
         elif action_list[3] == 1:  # move down
-            if self.occupancy[self.agt4_pos[0] + 1][self.agt4_pos[1]] != 1:  # if can move
+            if (
+                self.occupancy[self.agt4_pos[0] + 1][self.agt4_pos[1]] != 1
+            ):  # if can move
                 self.agt4_pos[0] = self.agt4_pos[0] + 1
                 self.occupancy[self.agt4_pos[0] - 1][self.agt4_pos[1]] = 0
                 self.occupancy[self.agt4_pos[0]][self.agt4_pos[1]] = 1
         elif action_list[3] == 2:  # move left
-            if self.occupancy[self.agt4_pos[0]][self.agt4_pos[1] - 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt4_pos[0]][self.agt4_pos[1] - 1] != 1
+            ):  # if can move
                 self.agt4_pos[1] = self.agt4_pos[1] - 1
                 self.occupancy[self.agt4_pos[0]][self.agt4_pos[1] + 1] = 0
                 self.occupancy[self.agt4_pos[0]][self.agt4_pos[1]] = 1
         elif action_list[3] == 3:  # move right
-            if self.occupancy[self.agt4_pos[0]][self.agt4_pos[1] + 1] != 1:  # if can move
+            if (
+                self.occupancy[self.agt4_pos[0]][self.agt4_pos[1] + 1] != 1
+            ):  # if can move
                 self.agt4_pos[1] = self.agt4_pos[1] + 1
                 self.occupancy[self.agt4_pos[0]][self.agt4_pos[1] - 1] = 0
                 self.occupancy[self.agt4_pos[0]][self.agt4_pos[1]] = 1
@@ -196,19 +230,48 @@ class EnvOppositeV2(object):
     def render(self):
         obs = self.get_global_obs()
         enlarge = 30
-        new_obs = np.ones((self.map_size*enlarge, self.map_size*enlarge, 3))
+        new_obs = np.ones((self.map_size * enlarge, self.map_size * enlarge, 3))
         for i in range(self.map_size):
             for j in range(self.map_size):
-
                 if obs[i][j][0] == 0.0 and obs[i][j][1] == 0.0 and obs[i][j][2] == 0.0:
-                    cv2.rectangle(new_obs, (j * enlarge, i * enlarge), (j * enlarge + enlarge, i * enlarge + enlarge), (0, 0, 0), -1)
+                    cv2.rectangle(
+                        new_obs,
+                        (j * enlarge, i * enlarge),
+                        (j * enlarge + enlarge, i * enlarge + enlarge),
+                        (0, 0, 0),
+                        -1,
+                    )
                 if obs[i][j][0] == 1.0 and obs[i][j][1] == 0.0 and obs[i][j][2] == 0.0:
-                    cv2.rectangle(new_obs, (j * enlarge, i * enlarge), (j * enlarge + enlarge, i * enlarge + enlarge), (0, 0, 255), -1)
+                    cv2.rectangle(
+                        new_obs,
+                        (j * enlarge, i * enlarge),
+                        (j * enlarge + enlarge, i * enlarge + enlarge),
+                        (0, 0, 255),
+                        -1,
+                    )
                 if obs[i][j][0] == 0.0 and obs[i][j][1] == 1.0 and obs[i][j][2] == 0.0:
-                    cv2.rectangle(new_obs, (j * enlarge, i * enlarge), (j * enlarge + enlarge, i * enlarge + enlarge), (0, 255, 0), -1)
+                    cv2.rectangle(
+                        new_obs,
+                        (j * enlarge, i * enlarge),
+                        (j * enlarge + enlarge, i * enlarge + enlarge),
+                        (0, 255, 0),
+                        -1,
+                    )
                 if obs[i][j][0] == 0.0 and obs[i][j][1] == 1.0 and obs[i][j][2] == 1.0:
-                    cv2.rectangle(new_obs, (j * enlarge, i * enlarge), (j * enlarge + enlarge, i * enlarge + enlarge), (255, 255, 0), -1)
+                    cv2.rectangle(
+                        new_obs,
+                        (j * enlarge, i * enlarge),
+                        (j * enlarge + enlarge, i * enlarge + enlarge),
+                        (255, 255, 0),
+                        -1,
+                    )
                 if obs[i][j][0] == 1.0 and obs[i][j][1] == 1.0 and obs[i][j][2] == 0.0:
-                    cv2.rectangle(new_obs, (j * enlarge, i * enlarge), (j * enlarge + enlarge, i * enlarge + enlarge), (0, 255, 255), -1)
-        cv2.imshow('image', new_obs)
+                    cv2.rectangle(
+                        new_obs,
+                        (j * enlarge, i * enlarge),
+                        (j * enlarge + enlarge, i * enlarge + enlarge),
+                        (0, 255, 255),
+                        -1,
+                    )
+        cv2.imshow("image", new_obs)
         cv2.waitKey(100)

@@ -1,5 +1,6 @@
-from env_SingleCatchPigs import EnvSingleCatchPigs
 import random
+
+from env_SingleCatchPigs import EnvSingleCatchPigs
 
 env = EnvSingleCatchPigs(7)
 max_iter = 10000
@@ -9,9 +10,8 @@ for i in range(max_iter):
     print("iter= ", i)
     env.render()
     action = random.randint(0, 4)
-    print('action is', action)
+    print("action is", action)
     reward, done = env.step(action)
-    print('reward', reward, 'done', done)
+    print("reward", reward, "done", done)
     if reward > 0:
-        print('catch the pig', reward, done)
-
+        print("catch the pig", reward, done)
