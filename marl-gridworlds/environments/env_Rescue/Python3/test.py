@@ -32,8 +32,9 @@ for MC_iter in range(max_MC_iter):
     action1 = [random.random()-0.5, random.random()-0.5, 20*(random.random()-0.5), 0]
     action2 = [random.random()-0.5, random.random()-0.5, 20*(random.random()-0.5), 0]
     action_list = [action1, action2]
+    env.step(action_list)
+    
     print('iter', MC_iter)
     print('agent 0 is at',env.get_agent_pos(0))
     print('agent 1 is at',env.get_agent_pos(1))
-    env.step(action_list)
 
